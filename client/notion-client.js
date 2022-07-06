@@ -17,5 +17,15 @@ export async function getDatabase(databaseName) {
   return response.results.filter((result) => result.object == "database")
 }
 
-// console.log(await getDatabase("projects"))
-console.log(await getAllDatabases())
+export async function createEntry(databaseID, icon, properties, blocks) {
+  const notion = new Client({ auth: process.env.NOTION_API_KEY });
+  const response = await notion.pages.create({
+    parent: {
+      database_id: databaseID,
+    },
+    icon: icon,
+    properties: properties,
+    children: blocks,
+  });
+  return response
+}
