@@ -1,4 +1,5 @@
 import TelegramBot from "node-telegram-bot-api";
+import moment from "moment";
 import * as notion from "../client/notion-client.js"
 import * as utils from "./utils.js"
 
@@ -30,9 +31,12 @@ notbot.on('message', async (msg) => {
       for (const task of tasks) {
         const status = task.properties.Status.status?.name || "Not Started"
         const urgencyEmoji = task.properties.Urgency.select?.color || "white"
+        const dateTime = moment(task.properties.Deadline.date.start)
+        const dateComponent = dateTime.format('DD-MM-YYYY');
+
         await notbot.sendMessage(msg.chat.id, `${task.icon ? task.icon.emoji : ""} ${task.properties.Name.title[0].plain_text}\n` +
           `${utils.URGENCY[urgencyEmoji]} ${task.properties.Urgency.select?.name}\n` +
-          `Deadline: ${task.properties.Deadline.date.start.split("-").reverse().join("-")} \n\n` +
+          `Deadline: ${dateComponent} \n\n` +
           `Status: ${status}\n\n` +
           `${task.url}`);
       }
