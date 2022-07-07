@@ -1,5 +1,6 @@
-export const urgency = {
+export const URGENCY = {
   red: "🔴",
   yellow: "🟡",
-  blue: "🔵"
+  blue: "🔵",
+  white: "⚪",
 }

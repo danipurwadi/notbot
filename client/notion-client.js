@@ -1,6 +1,7 @@
 import 'dotenv/config'
 import moment from 'moment';
 import { Client } from "@notionhq/client";
+import * as utils from "../app/utils.js";
 
 export async function search(params) {
   const notion = new Client({ auth: process.env.NOTION_API_KEY });
@@ -30,7 +31,7 @@ export async function createPage(databaseID, icon, title, project, urgency) {
       emoji: icon
     },
     properties: {
-      "title": {
+      "Name": {
         "title": [
           {
             "type": "text",
@@ -54,7 +55,7 @@ export async function createPage(databaseID, icon, title, project, urgency) {
         "select": {
           "name": urgency
         }
-      }
+      },
     },
   });
   return response
@@ -86,7 +87,7 @@ export async function getTasksDueToday() {
     },
   ]
   const response = await getDatabasePages(databaseID, filter, sorts);
-  return response.results.filter((result) => result.object == "page" && result.properties.Status.status.name != "Done")
+  return response.results.filter((result) => result.object == "page" && result.properties.Status?.status?.name != "Done")
 }
 
 export async function getProjectIcon(projectName) {
@@ -100,7 +101,3 @@ export async function getPage(pageID) {
   const response = await notion.pages.retrieve({ page_id: pageID });
   return response
 }
-
-// const db = await getDatabase("Tasks")
-// const dbID = db[0].id
-// const template = await getPage("cac26f29-f2f2-4353-852d-1a9835556e01")

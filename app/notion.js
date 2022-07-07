@@ -28,10 +28,12 @@ notbot.on('message', async (msg) => {
     case '/list':
       const tasks = await notion.getTasksDueToday();
       tasks.forEach((task) => {
-        notbot.sendMessage(msg.chat.id, `${task.icon.emoji} ${task.properties.Name.title[0].plain_text}\n` +
-          `${utils.urgency[task.properties.Urgency.select.color]} ${task.properties.Urgency.select.name}\n` +
+        const status = task.properties.Status.status?.name || "Not Started"
+        const urgencyEmoji = task.properties.Urgency.select?.color || "white"
+        notbot.sendMessage(msg.chat.id, `${task.icon ? task.icon.emoji : ""} ${task.properties.Name.title[0].plain_text}\n` +
+          `${utils.URGENCY[urgencyEmoji]} ${task.properties.Urgency.select?.name}\n` +
           `Deadline: ${task.properties.Deadline.date.start.split("-").reverse().join("-")} \n\n` +
-          `Status: ${task.properties.Status.status.name}\n\n` +
+          `Status: ${status}\n\n` +
           `${task.url}`);
       })
       break;
@@ -48,8 +50,13 @@ notbot.on('message', async (msg) => {
       const tasksDatabase = await notion.getDatabase("Tasks");
       const databaseID = tasksDatabase[0].id;
 
-      notion.createPage(databaseID, icon, title, project, urgency)
-      notbot.sendMessage(msg.chat.id, "Created page successfully!");
+      const response = await notion.createPage(databaseID, icon, title, project, urgency);
+
+      if (response) {
+        notbot.sendMessage(msg.chat.id, "Created page successfully!");
+      } else {
+        notbot.sendMessage(msg.chat.id, "Failed to create page");
+      }
       break;
     default:
       notbot.sendMessage(msg.chat.id, "Unrecognized command, type /help to get more info");
