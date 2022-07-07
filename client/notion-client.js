@@ -90,6 +90,36 @@ export async function getTasksDueToday() {
   return response.results.filter((result) => result.object == "page" && result.properties.Status.status?.name != "Done")
 }
 
+export async function getAllTasks() {
+  const tasksDatabase = await getDatabase("Tasks");
+  const databaseID = tasksDatabase[0].id;
+  const filter = {
+    or: [
+      {
+        property: "Deadline",
+        date: {
+          on_or_before: new Date().toISOString()
+        }
+      },
+      {
+        property: "Deadline",
+        date: {
+          is_empty: true
+        }
+      }
+    ]
+  }
+  const sorts = [
+    {
+      property: 'Urgency',
+      direction: 'ascending',
+    },
+  ]
+  const response = await getDatabasePages(databaseID, filter, sorts);
+  return response.results.filter((result) => result.object == "page" && result.properties.Status.status?.name != "Done")
+
+}
+
 export async function getProjectIcon(projectName) {
   const response = await search({ query: projectName, filter: { value: "page", property: "object" } })
   const project = response.results.filter((result) => result.properties.Project.select.name == projectName)
