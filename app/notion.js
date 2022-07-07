@@ -9,7 +9,7 @@ let notbot;
 if (process.env.NODE_ENV === 'production') {
   // use webhooks
   notbot = new TelegramBot(token);
-  notbot.setWebHook(process.env.HEROKU_URL + bot.token);
+  notbot.setWebHook(process.env.HEROKU_URL + notbot.token);
   console.log('**** BOT initiated ***** ');
 } else {
   // use polling
