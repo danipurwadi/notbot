@@ -32,10 +32,9 @@ notbot.on('message', async (msg) => {
       for (const task of tasks) {
         const status = task.properties.Status.status?.name || "Not Started"
         const urgencyEmoji = task.properties.Urgency.select?.color || "white"
-        const dateTime = moment(task.properties.Deadline.date.start)
-        const dateComponent = dateTime.format('DD-MM-YYYY');
+        const dateComponent = task.properties.Deadline.date ? moment(task.properties.Deadline.date.start).format('DD-MM-YYYY') : "Null";
 
-        await notbot.sendMessage(msg.chat.id, `${task.icons ? task.icon.emoji : ""} [${task.properties.Project.select ? task.properties.Project.select.name : ""}] ${task.properties.Name.title[0].plain_text}\n` +
+        await notbot.sendMessage(msg.chat.id, `${task.icon ? task.icon.emoji : ""} [${task.properties.Project.select ? task.properties.Project.select.name : ""}] ${task.properties.Name.title[0].plain_text}\n` +
           `${utils.URGENCY[urgencyEmoji]} ${task.properties.Urgency.select?.name}\n` +
           `Deadline: ${dateComponent} \n\n` +
           `Status: ${status}\n\n` +
