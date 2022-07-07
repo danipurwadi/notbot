@@ -10,17 +10,18 @@ if (process.env.NODE_ENV === 'production') {
   console.log('**** BOT initiated ***** ');
 } else {
   // use polling
-  console.log(token)
   notbot = new TelegramBot(token, { polling: true });
 }
 
 notbot.on('message', async (msg) => {
   const input = msg.text;
-  switch (msg.text) {
+  switch (input) {
     case '/start':
       notbot.sendMessage(msg.chat.id, "Welcome to Notion Bot!");
+      break;
     case '/help':
-      notbot.sendMessage(msg.chat.id, "Welcome to Notion Bot!");
+      notbot.sendMessage(msg.chat.id, "No help can be found");
+      break;
     default:
       notbot.sendMessage(msg.chat.id, "Unrecognized command, type /help to know more");
   }
