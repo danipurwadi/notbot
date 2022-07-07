@@ -27,15 +27,15 @@ notbot.on('message', async (msg) => {
       break;
     case '/list':
       const tasks = await notion.getTasksDueToday();
-      tasks.forEach((task) => {
+      for (const task of tasks) {
         const status = task.properties.Status.status?.name || "Not Started"
         const urgencyEmoji = task.properties.Urgency.select?.color || "white"
-        notbot.sendMessage(msg.chat.id, `${task.icon ? task.icon.emoji : ""} ${task.properties.Name.title[0].plain_text}\n` +
+        await notbot.sendMessage(msg.chat.id, `${task.icon ? task.icon.emoji : ""} ${task.properties.Name.title[0].plain_text}\n` +
           `${utils.URGENCY[urgencyEmoji]} ${task.properties.Urgency.select?.name}\n` +
           `Deadline: ${task.properties.Deadline.date.start.split("-").reverse().join("-")} \n\n` +
           `Status: ${status}\n\n` +
           `${task.url}`);
-      })
+      }
       break;
     case '/update':
       const taskName = input[1]

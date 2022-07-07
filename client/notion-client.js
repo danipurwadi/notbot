@@ -83,11 +83,11 @@ export async function getTasksDueToday() {
   const sorts = [
     {
       property: 'Urgency',
-      direction: 'descending',
+      direction: 'ascending',
     },
   ]
   const response = await getDatabasePages(databaseID, filter, sorts);
-  return response.results.filter((result) => result.object == "page" && result.properties.Status?.status?.name != "Done")
+  return response.results.filter((result) => result.object == "page" && result.properties.Status.status?.name != "Done")
 }
 
 export async function getProjectIcon(projectName) {
