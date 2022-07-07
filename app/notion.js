@@ -41,7 +41,14 @@ notbot.on('message', async (msg) => {
       notbot.sendMessage(msg.chat.id, "Update successful!");
       break;
     case '/new':
+      const project = input[1]
+      const urgency = input[2]
+      const title = input.slice(3).join(" ")
+      const icon = await notion.getProjectIcon(project);
+      const tasksDatabase = await notion.getDatabase("Tasks");
+      const databaseID = tasksDatabase[0].id;
 
+      notion.createPage(databaseID, icon, title, project, urgency)
       notbot.sendMessage(msg.chat.id, "Created page successfully!");
       break;
     default:
