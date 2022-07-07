@@ -26,8 +26,8 @@ notbot.on('message', async (msg) => {
     case '/help':
       notbot.sendMessage(msg.chat.id, "`/list` Lists all tasks that are due today\n`/new <project> <urgency> <title>");
       break;
-    case '/list' || '/all':
-
+    case '/all':
+    case '/list':
       const tasks = input[0] == '/list' ? await notion.getTasksDueToday() : await notion.getAllTasks();
       for (const task of tasks) {
         const status = task.properties.Status.status?.name || "Not Started"
@@ -35,8 +35,8 @@ notbot.on('message', async (msg) => {
         const dateTime = moment(task.properties.Deadline.date.start)
         const dateComponent = dateTime.format('DD-MM-YYYY');
 
-        await notbot.sendMessage(msg.chat.id, `${task.icons ? task.icon.emoji : ""} ${task.properties.Name.title[0].plain_text}\n` +
-          `${utils.URGENCY[urgencyEmoji]} [${task.properties.Project.select ? task.properties.Project.select.name : ""}] ${task.properties.Urgency.select?.name}\n` +
+        await notbot.sendMessage(msg.chat.id, `${task.icons ? task.icon.emoji : ""} [${task.properties.Project.select ? task.properties.Project.select.name : ""}] ${task.properties.Name.title[0].plain_text}\n` +
+          `${utils.URGENCY[urgencyEmoji]} ${task.properties.Urgency.select?.name}\n` +
           `Deadline: ${dateComponent} \n\n` +
           `Status: ${status}\n\n` +
           `${task.url}`);
